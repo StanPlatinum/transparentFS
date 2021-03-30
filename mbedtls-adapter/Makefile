@@ -1,4 +1,4 @@
-GRAPHENE_DIR = /usr/local/src/graphene-atstub
+GRAPHENE_DIR = /home/notapaper/graphene
 
 include $(GRAPHENE_DIR)/Scripts/Makefile.configs
 include $(GRAPHENE_DIR)/Scripts/Makefile.rules
@@ -67,7 +67,7 @@ MBEDCRYPTO_URI ?= \
 MBEDCRYPTO_CHECKSUM ?= 7e171df03560031bc712489930831e70ae4b70ff521a609c6361f36bd5f8b76b
 
 crypto/$(MBEDTLS_SRC):
-	# $(GRAPHENE_DIR)/Scripts/download --output $@ $(foreach mirror,$(MBEDTLS_URI),--url $(mirror)/$(MBEDTLS_SRC)) --sha256 $(MBEDTLS_CHECKSUM)
+	$(GRAPHENE_DIR)/Scripts/download --output $@ $(foreach mirror,$(MBEDTLS_URI),--url $(mirror)/$(MBEDTLS_SRC)) --sha256 $(MBEDTLS_CHECKSUM)
 
 crypto/$(MBEDCRYPTO_SRC):
 	$(GRAPHENE_DIR)/Scripts/download --output $@ $(foreach mirror,$(MBEDCRYPTO_URI),--url $(mirror)/$(MBEDCRYPTO_SRC)) --sha256 $(MBEDCRYPTO_CHECKSUM)
@@ -102,7 +102,12 @@ crypto/mbedtls/include/mbedtls/config.h: crypto/config.h crypto/mbedtls/CMakeLis
 crypto/mbedtls/crypto/library/aes.c: crypto/mbedtls/CMakeLists.txt crypto/mbedtls/include/mbedtls/config.h
 $(filter-out crypto/mbedtls/crypto/library/aes.c,$(patsubst %.o,%.c,$(crypto_mbedtls_library_objs))): crypto/mbedtls/crypto/library/aes.c
 
-all: $(objs)
+crypto:
+	mkdir crypto
+	cp $(GRAPHENE_DIR)/Pal/lib/crypto/mbedtls-2.21.0.diff ./crypto
+
+all: crypto $(objs)
 
 clean:
-	$(RM) $(objs) 
+	$(RM) $(objs)
+	rm -rf crypto 
