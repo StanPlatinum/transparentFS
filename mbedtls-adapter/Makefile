@@ -68,9 +68,10 @@ MBEDCRYPTO_CHECKSUM ?= 7e171df03560031bc712489930831e70ae4b70ff521a609c6361f36bd
 
 crypto/$(MBEDTLS_SRC):
 	# $(GRAPHENE_DIR)/Scripts/download --output $@ $(foreach mirror,$(MBEDTLS_URI),--url $(mirror)/$(MBEDTLS_SRC)) --sha256 $(MBEDTLS_CHECKSUM)
+	#need to comment those to fit in bio-sgx's stupid wget
 
 crypto/$(MBEDCRYPTO_SRC):
-	$(GRAPHENE_DIR)/Scripts/download --output $@ $(foreach mirror,$(MBEDCRYPTO_URI),--url $(mirror)/$(MBEDCRYPTO_SRC)) --sha256 $(MBEDCRYPTO_CHECKSUM)
+	# $(GRAPHENE_DIR)/Scripts/download --output $@ $(foreach mirror,$(MBEDCRYPTO_URI),--url $(mirror)/$(MBEDCRYPTO_SRC)) --sha256 $(MBEDCRYPTO_CHECKSUM)
 
 ifeq ($(DEBUG),1)
 MBED_BUILD_TYPE=Debug
