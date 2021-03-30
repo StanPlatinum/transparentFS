@@ -69,9 +69,11 @@ MBEDCRYPTO_CHECKSUM ?= 7e171df03560031bc712489930831e70ae4b70ff521a609c6361f36bd
 crypto/$(MBEDTLS_SRC):
 	# $(GRAPHENE_DIR)/Scripts/download --output $@ $(foreach mirror,$(MBEDTLS_URI),--url $(mirror)/$(MBEDTLS_SRC)) --sha256 $(MBEDTLS_CHECKSUM)
 	#need to comment those to fit in bio-sgx's stupid wget
+	mv mbedtls-2.21.0.tar.gz crypto/
 
 crypto/$(MBEDCRYPTO_SRC):
 	# $(GRAPHENE_DIR)/Scripts/download --output $@ $(foreach mirror,$(MBEDCRYPTO_URI),--url $(mirror)/$(MBEDCRYPTO_SRC)) --sha256 $(MBEDCRYPTO_CHECKSUM)
+	mv mbedcrypto-3.1.0.tar.gz crypto/
 
 ifeq ($(DEBUG),1)
 MBED_BUILD_TYPE=Debug
@@ -103,7 +105,16 @@ crypto/mbedtls/include/mbedtls/config.h: crypto/config.h crypto/mbedtls/CMakeLis
 crypto/mbedtls/crypto/library/aes.c: crypto/mbedtls/CMakeLists.txt crypto/mbedtls/include/mbedtls/config.h
 $(filter-out crypto/mbedtls/crypto/library/aes.c,$(patsubst %.o,%.c,$(crypto_mbedtls_library_objs))): crypto/mbedtls/crypto/library/aes.c
 
-all: $(objs)
+crypto:
+	mkdir crypto
+	cp $(GRAPHENE_DIR)/Pal/lib/crypto/mbedtls-2.21.0.diff ./crypto
+	cp $(GRAPHENE_DIR)/Pal/lib/crypto/config.h ./crypto
+
+all: crypto $(objs)
 
 clean:
-	$(RM) $(objs) 
+	$(RM) $(objs)
+	#need to fit in the bio-sgx
+	mv crypto/mbedtls-2.21.0.tar.gz .
+	mv crypto/mbedcrypto-3.1.0.tar.gz .
+	rm -rf crypto
