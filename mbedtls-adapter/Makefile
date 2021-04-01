@@ -6,6 +6,8 @@ include $(GRAPHENE_DIR)/Pal/src/host/$(PAL_HOST)/Makefile.am
 
 CFLAGS += -fno-stack-protector
 
+CFLAGS += -DCRYPTO_USE_MBEDTLS
+
 CFLAGS += \
 	-Icrypto/mbedtls/include \
 	-Icrypto/mbedtls/crypto/include
@@ -47,9 +49,12 @@ ifeq ($(ARCH),x86_64)
 crypto_mbedtls_library_objs += \
 	crypto/mbedtls/crypto/library/aesni.o
 endif
-
 objs += $(crypto_mbedtls_library_objs)
 endif
+
+# objs += mbedtls_adapter.o
+# objs += mbedtls_dh.o
+# objs += mbedtls_encoding.o
 
 MBEDTLS_VERSION ?= 2.21.0
 MBEDTLS_SRC ?= mbedtls-$(MBEDTLS_VERSION).tar.gz
