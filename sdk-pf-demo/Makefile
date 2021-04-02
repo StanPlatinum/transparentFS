@@ -32,7 +32,7 @@
 ######## SGX SDK Settings ########
 
 SGX_SDK ?= /opt/intel/sgxsdk
-SGX_MODE ?= SIM
+SGX_MODE ?= HW
 SGX_ARCH ?= x64
 SGX_DEBUG ?= 1
 
@@ -216,9 +216,9 @@ $(Signed_Enclave_Name): $(Enclave_Name)
 .PHONY: test
 test:
 	echo "Hello World!\n" > plaintext.test.txt
-	./sgx_protect_file encrypt -i plaintext.test.txt -o encrypted.test.txt -k 123
-	./sgx_protect_file decrypt -i encrypted.test.txt -o decrypted.test.txt -k 123
-	diff plaintext.test.txt decrypted.test.txt
+	./app encrypt -i plaintext.test.txt -u wuliangshun
+	./app decrypt -i encrypted_plaintext.test.txt -u wuliangshun
+	# diff plaintext.test.txt decrypted.test.txt
 
 .PHONY: clean
 clean:
