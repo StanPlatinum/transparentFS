@@ -6,7 +6,6 @@
 
 #include "string.h"
 
-#include "TrustedPF/protected_files.h"
 
 /* re-define printf inside enclave */
 void printf(const char *fmt, ...){
@@ -19,9 +18,19 @@ void printf(const char *fmt, ...){
 }
 
 int pf_demo_processing(void){
-	//     pf_handle_t handle = (pf_handle_t)&output;
-    // pf_status_t pfs = pf_open(handle, output_path, /*size=*/0, PF_FILE_MODE_WRITE, /*create=*/true,
-    //                           wrap_key, &pf);
+	return 0;
+}
 
-    return 0;
+pf_status_t gpf_open(pf_handle_t handle, const char* path, uint64_t underlying_size,
+                    pf_file_mode_t mode, bool create, const pf_key_t* key, pf_context_t** context) {
+
+	printf("handle: %p\n", handle);
+	printf("path: %s\n", path);
+	printf("underlying_size: %d\n", underlying_size);
+	printf("mode: %d\n", mode);
+	printf("key the 15th byte: %d\n", (*key)[14]);
+
+    pf_status_t status;
+    // *context = ipf_open(path, mode, create, handle, underlying_size, key, &status);
+    return status;
 }

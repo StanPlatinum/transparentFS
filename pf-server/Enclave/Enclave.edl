@@ -35,6 +35,8 @@ enclave {
     
     include "user_types.h" /* buffer_t */
 
+    include "g_protected_files.h"
+
     /* Import ECALL/OCALL from sub-directory EDLs.
      *  [from]: specifies the location of EDL file. 
      *  [import]: specifies the functions to import, 
@@ -43,6 +45,8 @@ enclave {
     
     trusted{
         public int pf_demo_processing(void);
+        public pf_status_t gpf_open(pf_handle_t handle, [in, size=256] const char* path, uint64_t underlying_size,
+                    pf_file_mode_t mode, bool create, [in, size=16] const pf_key_t* key, [out] pf_context_t** context);
     };
     untrusted {
         void Ocall_PrintString([in, string] const char *str);

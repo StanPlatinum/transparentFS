@@ -34,6 +34,12 @@
 #include <string.h>
 #include <assert.h>
 
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
+ #include <fcntl.h>
+
+
 # include <unistd.h>
 # include <pwd.h>
 # define MAX_PATH FILENAME_MAX
@@ -228,6 +234,27 @@ void Ocall_PrintString(const char *str){
     printf("%s", str);
 }
 
+int read_a_encrypted_file(char* input_path, pf_key_t* key, void* buf, size_t buf_size){
+    int fd = open(input_path, O_RDONLY);
+    if (fd != NULL)
+        printf("open success in read_a_encrypted_file\n");
+    else perror("fopen");
+    struct stat st;
+    fstat(fd, &st);
+    int file_size = st.st_size;
+    printf("file size: %d\n", file_size);
+
+    pf_context_t** context;
+    pf_handle_t gfile_handle = (pf_handle_t) &fd;
+    pf_status_t* rv;
+
+    gpf_open(global_eid, rv, gfile_handle, input_path, file_size, PF_FILE_MODE_READ, false, key, context);
+}
+
+int encrypt_to_file(char* output_path, void* buf, size_t buf_size){
+    
+}
+
 /* Application entry */
 int SGX_CDECL main(int argc, char *argv[])
 {
@@ -242,7 +269,10 @@ int SGX_CDECL main(int argc, char *argv[])
         getchar();
         return -1; 
     }
- 
+
+    pf_key_t key = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15};
+    read_a_encrypted_file("hello.txt", &key, NULL, 0);
+
 
     /* Destroy the enclave */
     sgx_destroy_enclave(global_eid);
