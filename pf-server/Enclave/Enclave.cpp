@@ -1,10 +1,11 @@
 #include <stdarg.h>
+
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 #include "Enclave.h"
 #include "Enclave_t.h"
-
-#include "string.h"
 
 
 /* re-define printf inside enclave */
@@ -21,7 +22,11 @@ int pf_demo_processing(void){
 	return 0;
 }
 
-pf_status_t gpf_open(pf_handle_t handle, const char* path, uint64_t underlying_size,
+
+#include "g_protected_files.c"
+
+
+pf_status_t g_pf_open(pf_handle_t handle, const char* path, uint64_t underlying_size,
                     pf_file_mode_t mode, bool create, const pf_key_t* key, pf_context_t** context) {
 
 	printf("handle: %p\n", handle);

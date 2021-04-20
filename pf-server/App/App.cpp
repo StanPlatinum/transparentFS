@@ -248,7 +248,7 @@ int read_a_encrypted_file(char* input_path, pf_key_t* key, void* buf, size_t buf
     pf_handle_t gfile_handle = (pf_handle_t) &fd;
     pf_status_t* rv;
 
-    gpf_open(global_eid, rv, gfile_handle, input_path, file_size, PF_FILE_MODE_READ, false, key, context);
+    g_pf_open(global_eid, rv, gfile_handle, input_path, file_size, PF_FILE_MODE_READ, false, key, context);
 }
 
 int encrypt_to_file(char* output_path, void* buf, size_t buf_size){
