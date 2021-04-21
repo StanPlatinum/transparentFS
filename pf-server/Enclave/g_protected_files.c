@@ -2,11 +2,8 @@
 
 // #include "api.h"
 
-//lruc implementation: lru_cache.c
-
-
 #include "g_lru_cache.c"
-
+#include "callbacks.c"
 
 /* Function for scrubbing sensitive memory buffers.
  * memset() can be optimized away and memset_s() is not available in PAL.
@@ -21,14 +18,14 @@ static void erase_memory(void* buffer, size_t size) {
 }
 
 /* Host callbacks */
-static pf_read_f     g_cb_read     = NULL;
-static pf_write_f    g_cb_write    = NULL;
-static pf_truncate_f g_cb_truncate = NULL;
-static pf_debug_f    g_cb_debug    = NULL;
+static pf_read_f     g_cb_read     = cb_read;
+static pf_write_f    g_cb_write    = cb_write;
+static pf_truncate_f g_cb_truncate = cb_truncate;
+// static pf_debug_f    g_cb_debug    = NULL;
 
-static pf_aes_gcm_encrypt_f g_cb_aes_gcm_encrypt = NULL;
-static pf_aes_gcm_decrypt_f g_cb_aes_gcm_decrypt = NULL;
-static pf_random_f          g_cb_random          = NULL;
+static pf_aes_gcm_encrypt_f g_cb_aes_gcm_encrypt = cb_aes_gcm_encrypt;
+static pf_aes_gcm_decrypt_f g_cb_aes_gcm_decrypt = cb_aes_gcm_decrypt;
+static pf_random_f          g_cb_random          = cb_random;
 
 #ifdef DEBUG
 #define PF_DEBUG_PRINT_SIZE_MAX 4096
@@ -1165,3 +1162,5 @@ static file_node_t* ipf_read_mht_node(pf_context_t* pf, uint64_t mht_node_number
 
     return file_mht_node;
 }
+
+// public APIs will be in the Enclave.cpp

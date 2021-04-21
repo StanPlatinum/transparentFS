@@ -36,6 +36,6 @@ pf_status_t g_pf_open(pf_handle_t handle, const char* path, uint64_t underlying_
 	printf("key the 15th byte: %d\n", (*key)[14]);
 
     pf_status_t status;
-    // *context = ipf_open(path, mode, create, handle, underlying_size, key, &status);
+    *context = ipf_open(path, mode, create, handle, underlying_size, key, &status);
     return status;
 }

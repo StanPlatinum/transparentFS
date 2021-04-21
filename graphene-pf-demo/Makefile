@@ -8,12 +8,14 @@
 # Use `make clean` to remove Graphene-generated files.
 
 THIS_DIR := $(dir $(lastword $(MAKEFILE_LIST)))
-APP_DIR ?= /u/weijliu/transparentFS
+APP_DIR ?= /home/box/transparentFS/graphene-pf-demo
 APP_NAME := hello
 
 
 # Relative path to Graphene root and key for enclave signing
-GRAPHENEDIR ?= /usr/local/src/graphene-atstub
+# GRAPHENEDIR ?= /usr/local/src/graphene-atstub
+GRAPHENEDIR ?= /home/box/graphene
+
 SGX_SIGNER_KEY ?= $(GRAPHENEDIR)/Pal/src/host/Linux-SGX/signer/enclave-key.pem
 
 ifeq ($(DEBUG),1)

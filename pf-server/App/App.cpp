@@ -226,6 +226,7 @@ int initialize_enclave(void)
 
 /*___________________________________________________*/
 
+#include "ocall.c"
 
 #define MAX_BUF_LEN 100
 
@@ -249,10 +250,14 @@ int read_a_encrypted_file(char* input_path, pf_key_t* key, void* buf, size_t buf
     pf_status_t* rv;
 
     g_pf_open(global_eid, rv, gfile_handle, input_path, file_size, PF_FILE_MODE_READ, false, key, context);
+
+
+
+
 }
 
 int encrypt_to_file(char* output_path, void* buf, size_t buf_size){
-    
+    return 0;
 }
 
 /* Application entry */

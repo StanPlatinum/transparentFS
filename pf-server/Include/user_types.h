@@ -34,6 +34,10 @@
 
 #include <stdbool.h>
 
+#include <unistd.h>
+#include <sys/types.h>
+
+
 /* User defined types */
 
 typedef enum _pf_status_t {

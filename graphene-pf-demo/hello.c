@@ -17,9 +17,9 @@ int main(void){
 	char a[] = "Time is fast";
 	fwrite( a, sizeof(a), 1, fpwrite);
 	//fprintf
-	for (int i = 0; i < 10; i++) {
-		fprintf(fpwrite, "%d ", i);
-	}
+	// for (int i = 0; i < 10; i++) {
+	// 	fprintf(fpwrite, "%d ", i);
+	// }
 	//fclose
 	fclose(fpwrite);
 

@@ -44,12 +44,17 @@ enclave {
 
     trusted{
         public int pf_demo_processing(void);
+
         public pf_status_t g_pf_open(pf_handle_t handle, [in, size=256] const char* path, uint64_t underlying_size,
                     pf_file_mode_t mode, bool create, [in, size=16] const pf_key_t* key, [out] pf_context_t** context);
 
     };
     untrusted {
         void Ocall_PrintString([in, string] const char *str);
+
+        ssize_t ocall_pread(int fd, [out, size=count] void* buf, size_t count, off_t offset);
+        ssize_t ocall_pwrite(int fd, [in, size=count] const void *buf, size_t count, off_t offset);
+        int ocall_ftruncate(int fd, uint64_t length);
     };
 
 };
