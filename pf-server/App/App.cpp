@@ -245,14 +245,23 @@ int read_a_encrypted_file(char* input_path, pf_key_t* key, void* buf, size_t buf
     int file_size = st.st_size;
     printf("file size: %d\n", file_size);
 
-    pf_context_t** context;
-    pf_handle_t gfile_handle = (pf_handle_t) &fd;
-    pf_status_t* rv;
+    pf_context_t* context_p;
+    pf_context_t** context_pp = &context_p;
+    pf_handle_t g_file_handle = (pf_handle_t) &fd;
+    pf_status_t rv;
 
-    g_pf_open(global_eid, rv, gfile_handle, input_path, file_size, PF_FILE_MODE_READ, false, key, context);
+    g_pf_open(global_eid, &rv, g_file_handle, input_path, file_size, PF_FILE_MODE_READ, false, key, context_pp);
 
+    printf("return from g_pf_open\n");
 
+    // if (!(*context)) {
+    //     printf("pf_file_read(PF fd %d): PF not initialized\n", fd);
+    //     return -1;
+    // }
 
+    // size_t bytes_read = 0;
+    // g_pf_read(global_eid, rv, *context, 0, file_size, buf, &bytes_read);
+    // printf("buffer: %s\n");
 
 }
 
@@ -266,7 +275,7 @@ int SGX_CDECL main(int argc, char *argv[])
     (void)(argc);
     (void)(argv);
 
-    char buffer[MAX_BUF_LEN] = "Hello App!";
+    // char buffer[MAX_BUF_LEN] = "Hello App!";
 
     /* Initialize the enclave */
     if(initialize_enclave() < 0){
@@ -275,8 +284,10 @@ int SGX_CDECL main(int argc, char *argv[])
         return -1; 
     }
 
-    pf_key_t key = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15};
-    read_a_encrypted_file("hello.txt", &key, NULL, 0);
+    // pf_key_t key = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15};
+    pf_key_t key = {0};
+    void* buffer = malloc(100);
+    read_a_encrypted_file("data/secret.txt", &key, buffer, 100);
 
 
     /* Destroy the enclave */

@@ -1,0 +1,98 @@
+# your_app manifest file example
+#
+# This manifest was prepared and tested on Ubuntu 16.04.
+
+libos.entrypoint = "file:/home/box/transparentFS/graphene-pf-demo/hello"
+loader.argv0_override = "hello"
+
+# LibOS layer library of Graphene. There is currently only one implementation,
+# so it is always set to libsysdb.so. 
+loader.preload = "file:/home/box/graphene/Runtime/libsysdb.so"
+
+sgx.nonpie_binary = 1
+
+# Graphene log level
+loader.log_level = "debug"
+#loader.log_level = "$(GRAPHENE_LOG_LEVEL)"
+
+# Show/hide debug log of Graphene ('inline' or 'none' respectively).
+#loader.debug_type = ""
+
+# Read application arguments directly from the command line. Don't use this on production!
+loader.insecure__use_cmdline_argv = 1
+
+# Specify paths to search for libraries. The usual LD_LIBRARY_PATH syntax
+# applies. Paths must be in-Graphene visible paths, not host-OS paths (i.e.,
+# paths must be taken from fs.mount.xxx.path, not fs.mount.xxx.uri).
+loader.env.LD_LIBRARY_PATH = "/lib:/lib/x86_64-linux-gnu:/usr//lib/x86_64-linux-gnu:/usr/lib//lib/x86_64-linux-gnu"
+
+# Mount host-OS directory to required libraries (in 'uri') into in-Graphene
+# visible directory /lib (in 'path').
+fs.mount.lib.type = "chroot"
+fs.mount.lib.path = "/lib"
+fs.mount.lib.uri = "file:/home/box/graphene/Runtime"
+
+fs.mount.lib2.type = "chroot"
+fs.mount.lib2.path = "/lib/x86_64-linux-gnu"
+fs.mount.lib2.uri = "file:/lib/x86_64-linux-gnu"
+
+fs.mount.lib3.type = "chroot"
+fs.mount.lib3.path = "/usr/lib/x86_64-linux-gnu"
+fs.mount.lib3.uri = "file:/usr//lib/x86_64-linux-gnu"
+
+# fs.mount.etc.type = "chroot"
+# fs.mount.etc.path = "/etc"
+# fs.mount.etc.uri = "file:/etc"
+
+fs.mount.hello.type = "chroot"
+fs.mount.hello.path = "/home/box/transparentFS/graphene-pf-demo"
+fs.mount.hello.uri = "file:/home/box/transparentFS/graphene-pf-demo"
+
+# Set enclave size (somewhat arbitrarily) to 256MB. Recall that SGX v1 requires
+# to specify enclave size at enclave creation time.
+sgx.enclave_size = "256M"
+
+# Set maximum number of in-enclave threads (somewhat arbitrarily) to 4. Recall
+# that SGX v1 requires to specify the maximum number of simultaneous threads at
+# enclave creation time.
+sgx.thread_num = 3
+
+# Specify protected data files
+
+sgx.protected_files_key = "00000000000000000000000000000000"
+
+#sgx.protected_files_key = "ffeeddccbbaa99887766554433221100"
+
+sgx.protected_files.secret1 = "file:data/secret.txt"
+
+# sgx.allowed_files.data= "file:data"
+
+# Specify all libraries used by $(APP_NAME) and its dependencies (including all libs
+# which can be loaded at runtime via dlopen).
+
+sgx.trusted_files."$(APP_NAME)" = "file:/home/box/transparentFS/graphene-pf-demo/hello"
+
+sgx.trusted_files.ld = "file:/home/box/graphene/Runtime/ld-linux-x86-64.so.2"
+sgx.trusted_files.libc = "file:/home/box/graphene/Runtime/libc.so.6"
+sgx.trusted_files.libm = "file:/home/box/graphene/Runtime/libm.so.6"
+# sgx.trusted_files.libdl = "file:/home/box/graphene/Runtime/libdl.so.2"
+sgx.trusted_files.librt = "file:/home/box/graphene/Runtime/librt.so.1"
+# sgx.trusted_files.libutil = "file:/home/box/graphene/Runtime/libutil.so.1"
+sgx.trusted_files.libpthread = "file:/home/box/graphene/Runtime/libpthread.so.0"
+sgx.trusted_files.libgcc_s = "file:/lib/x86_64-linux-gnu/libgcc_s.so.1"
+# sgx.trusted_files.libgcc_s = "file:/usr/lib/x86_64-linux-gnu/libgcc_s.so.1"
+# sgx.trusted_files.libnss_files = "file:/lib/x86_64-linux-gnu/libnss_files.so.2"
+# sgx.trusted_files.libnss_mdns4_minimal = "file:/lib/x86_64-linux-gnu/libnss_mdns4_minimal.so.2"
+sgx.trusted_files.libcso6 = "file:/lib/x86_64-linux-gnu/libc.so.6"
+
+
+# Name Service Switch (NSS) files. Glibc reads these files as part of name-
+# service information gathering. For more info, see 'man nsswitch.conf'.
+# sgx.allowed_files.nsswitch = "file:/etc/nsswitch.conf"
+# sgx.allowed_files.hostconf = "file:/etc/host.conf"
+# sgx.allowed_files.resolvconf = "file:/etc/resolv.conf"
+# sgx.allowed_files.ethers = "file:/etc/ethers"
+# sgx.allowed_files.hosts = "file:/etc/hosts"
+# sgx.allowed_files.group = "file:/etc/group"
+# sgx.allowed_files.passwd = "file:/etc/passwd"
+# sgx.allowed_files.gaiconf = "file:/etc/gai.conf"

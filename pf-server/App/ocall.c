@@ -11,7 +11,14 @@
 // }
 
 ssize_t ocall_pread(int fd, void* buf, size_t count, off_t offset) {
-    return pread(fd, buf, count, offset);
+
+    printf("DBG: before pread at ocall_pread\n");
+
+    ssize_t rv = pread(fd, buf, count, offset);
+
+    printf("DBG: after pread at ocall_pread\n");
+
+    return rv;
 }
 
 ssize_t ocall_pwrite(int fd, const void *buf, size_t count, off_t offset) {

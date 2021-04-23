@@ -1,0 +1,74 @@
+# DO NOT MODIFY. THIS FILE WAS AUTO-GENERATED.
+
+[libos]
+entrypoint = "file:/home/box/transparentFS/graphene-pf-demo/hello"
+
+[loader]
+argv0_override = "hello"
+preload = "file:/home/box/graphene/Runtime/libsysdb.so"
+log_level = "debug"
+insecure__use_cmdline_argv = 1
+
+[sgx]
+nonpie_binary = 1
+enclave_size = "256M"
+thread_num = 3
+protected_files_key = "00000000000000000000000000000000"
+isvprodid = 0
+isvsvn = 0
+remote_attestation = 0
+debug = 1
+require_avx = 0
+require_avx512 = 0
+require_mpx = 0
+require_pkru = 0
+support_exinfo = 0
+enable_stats = 0
+
+[loader.env]
+LD_LIBRARY_PATH = "/lib:/lib/x86_64-linux-gnu:/usr//lib/x86_64-linux-gnu:/usr/lib//lib/x86_64-linux-gnu"
+
+[sgx.protected_files]
+secret1 = "file:data/secret.txt"
+
+[sgx.trusted_files]
+preload0 = "file:/home/box/graphene/Runtime/libsysdb.so"
+"$(APP_NAME)" = "file:/home/box/transparentFS/graphene-pf-demo/hello"
+ld = "file:/home/box/graphene/Runtime/ld-linux-x86-64.so.2"
+libc = "file:/home/box/graphene/Runtime/libc.so.6"
+libm = "file:/home/box/graphene/Runtime/libm.so.6"
+librt = "file:/home/box/graphene/Runtime/librt.so.1"
+libpthread = "file:/home/box/graphene/Runtime/libpthread.so.0"
+libgcc_s = "file:/lib/x86_64-linux-gnu/libgcc_s.so.1"
+libcso6 = "file:/lib/x86_64-linux-gnu/libc.so.6"
+
+[sgx.trusted_checksum]
+preload0 = "31840d02ab6ce3a4666a1cc79ddc317fc9c5c800681884a1a62be5dfdd9f0369"
+"$(APP_NAME)" = "51ee1830a400ca385b79c3b8b1953f9b73fd2327cdb784abdd8180db851a4763"
+ld = "1e3a937fe316ebe0dedeffb1ac8c617b93916c7ef47929dad333343e654b323e"
+libc = "3114b758bdf61d8f9dfc3fb68d0bea3a42642a054bacbc9be4baab974cafd538"
+libm = "5664b2003370b146185dcee8d2b23050d7c765eddf07c516a3580e7c4b4602c2"
+librt = "d7b662a772320d0806b987e50acfe1922ad837ebfa5be68cf69611d588416c58"
+libpthread = "4cc5a31d82ac4d7554fafe97f0bea65d37cf3e6fe754cecfa7d6a50339f2d02d"
+libgcc_s = "2f0e486606bd477c6a6ad3588176a16099ed05a8bf47cf3bd27b490bea3d59e9"
+libcso6 = "467d8d5596e31cec78cdcde0c589bd04c031ec36598531bfd77e346ac447d9d6"
+
+[fs.mount.lib]
+type = "chroot"
+path = "/lib"
+uri = "file:/home/box/graphene/Runtime"
+
+[fs.mount.lib2]
+type = "chroot"
+path = "/lib/x86_64-linux-gnu"
+uri = "file:/lib/x86_64-linux-gnu"
+
+[fs.mount.lib3]
+type = "chroot"
+path = "/usr/lib/x86_64-linux-gnu"
+uri = "file:/usr//lib/x86_64-linux-gnu"
+
+[fs.mount.hello]
+type = "chroot"
+path = "/home/box/transparentFS/graphene-pf-demo"
+uri = "file:/home/box/transparentFS/graphene-pf-demo"

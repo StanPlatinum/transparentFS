@@ -7,9 +7,15 @@ static pf_status_t cb_read(pf_handle_t handle, void* buffer, uint64_t offset, si
     int fd = *(int*)handle;
     size_t buffer_offset = 0;
     size_t to_read = size;
+
     while (to_read > 0) {
         ssize_t read;
-        sgx_status_t ret = ocall_pread(read, fd, buffer + buffer_offset, to_read, offset + buffer_offset);
+
+        printf("DBG: before ocall_pread at cb_read\n");
+
+        sgx_status_t ret = ocall_pread(&read, fd, buffer + buffer_offset, to_read, offset + buffer_offset);
+        printf("DBG: after ocall_pread at cb_read\n");
+
         if (read == -EINTR)
             continue;
 
@@ -37,7 +43,7 @@ static pf_status_t cb_write(pf_handle_t handle, const void* buffer, uint64_t off
     size_t to_write = size;
     while (to_write > 0) {
         ssize_t written;
-        sgx_status_t ret = ocall_pwrite(written, fd, buffer + buffer_offset, to_write,
+        sgx_status_t ret = ocall_pwrite(&written, fd, buffer + buffer_offset, to_write,
                                        offset + buffer_offset);
         if (written == -EINTR)
             continue;
@@ -62,8 +68,8 @@ static pf_status_t cb_write(pf_handle_t handle, const void* buffer, uint64_t off
 
 static pf_status_t cb_truncate(pf_handle_t handle, uint64_t size) {
     int fd = *(int*)handle;
-    ssize_t rv;
-    sgx_status_t ret = ocall_ftruncate(rv, fd, size);
+    int rv;
+    sgx_status_t ret = ocall_ftruncate(&rv, fd, size);
     if (ret < 0) {
         printf("cb_truncate(%d, %lu): ocall failed: %d\n", fd, size, ret);
         return PF_STATUS_CALLBACK_FAILED;

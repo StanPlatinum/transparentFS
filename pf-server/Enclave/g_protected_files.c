@@ -50,7 +50,7 @@ static pf_random_f          g_cb_random          = cb_random;
     } while (0)
 
 #else /* DEBUG */
-#define DEBUG_PF(...)
+#define DEBUG_PF printf
 #define __DEBUG_PF(...)
 #endif /* DEBUG */
 
@@ -214,6 +214,7 @@ static pf_context_t* ipf_open(const char* path, pf_file_mode_t mode, bool create
     DEBUG_PF("OK (data size %lu)\n", pf->encrypted_part_plain.size);
 
 out:
+
     if (pf && PF_FAILURE(pf->last_error)) {
         DEBUG_PF("failed: %d\n", pf->last_error);
         free(pf);
@@ -223,6 +224,8 @@ out:
     if (pf)
         *status = pf->last_error;
 
+    DEBUG_PF("DBG: out at ipf_open\n");
+
     return pf;
 }
 
@@ -230,7 +233,12 @@ static bool ipf_read_node(pf_context_t* pf, pf_handle_t handle, uint64_t node_nu
                           uint32_t node_size) {
     uint64_t offset = node_number * node_size;
 
+    printf("DBG: beginning at ipf_read_node\n");
+
     pf_status_t status = g_cb_read(handle, buffer, offset, node_size);
+
+    printf("DBG: after gcb at ipf_read_node\n");
+
     if (PF_FAILURE(status)) {
         pf->last_error = status;
         return false;
@@ -258,11 +266,17 @@ static bool ipf_write_node(pf_context_t* pf, pf_handle_t handle, uint64_t node_n
 static bool ipf_init_existing_file(pf_context_t* pf, const char* path) {
     pf_status_t status;
 
+
     // read meta-data node
     if (!ipf_read_node(pf, pf->file, /*node_number=*/0, (uint8_t*)&pf->file_metadata,
                        PF_NODE_SIZE)) {
+
+        printf("DBG: read node error at ipf_init_existing_file\n");
+
         return false;
     }
+
+    printf("DBG: xxx at ipf_init_existing_file\n");
 
     if (pf->file_metadata.plain_part.file_id != PF_FILE_ID) {
         // such a file exists, but it is not a protected file
@@ -295,6 +309,10 @@ static bool ipf_init_existing_file(pf_context_t* pf, const char* path) {
 
     if (path) {
         size_t path_len = strlen(pf->encrypted_part_plain.path);
+
+        DEBUG_PF("DBG: path_len: %d, STRLEN(PATH): %d\n", path_len, strlen(path));
+        DEBUG_PF("DBG: path: %s,\npf->encrypted_part_plain.path: %s\n", path, pf->encrypted_part_plain.path);
+
         if (path_len != strlen(path)
                 || memcmp(path, pf->encrypted_part_plain.path, path_len) != 0) {
             pf->last_error = PF_STATUS_INVALID_PATH;
