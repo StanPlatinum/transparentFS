@@ -1,5 +1,9 @@
 {
     "files.associations": {
-        "g_protected_files.h": "c"
+        "g_protected_files.h": "c",
+        "array": "cpp",
+        "string_view": "cpp",
+        "initializer_list": "cpp",
+        "utility": "cpp"
     }
 }

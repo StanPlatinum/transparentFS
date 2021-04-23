@@ -260,14 +260,58 @@ int read_a_encrypted_file(char* input_path, pf_key_t* key, void* buf, size_t buf
     }
 
     size_t bytes_read = 0;
-    g_pf_read(global_eid, &rv, *context_pp, 0, file_size, buf, &bytes_read);
+    g_pf_read(global_eid, &rv, *context_pp, 0, buf, file_size, &bytes_read);
     printf("bytes_read: %d\n", bytes_read);
     printf("buffer: %s\n", buf);
 
+    g_pf_close(global_eid, &rv, *context_pp);
+    printf("close rv: %d\n", rv);
+    if(rv == 0)
+        return 0;
+    else
+        return -1;
+
 }
 
-int encrypt_to_file(char* output_path, void* buf, size_t buf_size){
-    return 0;
+int encrypt_to_file(char* output_path, pf_key_t* key, void* buf, size_t write_size){
+    
+    int fd = open(output_path, O_CREAT|O_WRONLY);
+    if (fd != NULL)
+        printf("open success in encrypt_to_file\n");
+    else perror("open");
+    struct stat st;
+    fstat(fd, &st);
+    int file_size = st.st_size;
+    printf("file size: %d\n", file_size);
+
+    pf_context_t* context_p;
+    pf_context_t** context_pp = &context_p;
+    pf_handle_t g_file_handle = (pf_handle_t) &fd;
+    pf_status_t rv;
+
+    g_pf_open(global_eid, &rv, g_file_handle, output_path, file_size, PF_FILE_MODE_WRITE, true, key, context_pp);
+
+    printf("return from g_pf_open\n");
+
+    if (!(*context_pp)) {
+        printf("pf_file_read(PF fd %d): PF not initialized\n", fd);
+        return -1;
+    }
+
+    g_pf_write(global_eid, &rv, *context_pp, 0, buf, write_size);
+    printf("bytes_write: %d\n", rv);
+    // printf("buffer: %s\n", buf);
+
+
+    g_pf_close(global_eid, &rv, *context_pp);
+    // printf("close rv: %d\n", rv);
+    // if(rv == 0)
+    //     return 0;
+    // else
+    //     return -1;
+
+    
+    // return 0;
 }
 
 /* Application entry */
@@ -288,11 +332,15 @@ int SGX_CDECL main(int argc, char *argv[])
     // pf_key_t key = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15};
     pf_key_t key = {0};
     void* buffer = malloc(100);
-    read_a_encrypted_file("data/secret.txt", &key, buffer, 100);
+    // read_a_encrypted_file("data/secret.txt", &key, buffer, 100);
 
-
+    // printf("read finished\n");
     /* Destroy the enclave */
+
+    encrypt_to_file("data/secret2.txt", &key, buffer, 13);
+
     sgx_destroy_enclave(global_eid);
+    printf("finished\n");
     
     return 0;
 }

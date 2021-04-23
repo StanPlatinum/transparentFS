@@ -22,7 +22,12 @@ ssize_t ocall_pread(int fd, void* buf, size_t count, off_t offset) {
 }
 
 ssize_t ocall_pwrite(int fd, const void *buf, size_t count, off_t offset) {
-    return pwrite(fd, buf, count, offset);
+    ssize_t rv = pwrite(fd, buf, count, offset);
+
+    printf("DBG: after pwrite at ocall_pwrite, rv: %d\n", rv);
+    
+    return rv;
+
 }
 
 int ocall_ftruncate(int fd, uint64_t length) {

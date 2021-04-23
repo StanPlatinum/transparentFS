@@ -68,7 +68,7 @@ pf_status_t g_pf_open(pf_handle_t handle, const char* path, uint64_t underlying_
 	return status;
 }
 
-pf_status_t g_pf_read(pf_context_t* pf, uint64_t offset, size_t size, void* output,
+pf_status_t g_pf_read(pf_context_t* pf, uint64_t offset, void* output, size_t read_size,
                     size_t* bytes_read) {
 
 	DEBUG_PF("DBG: begin of g_pf_read\n");
@@ -77,7 +77,7 @@ pf_status_t g_pf_read(pf_context_t* pf, uint64_t offset, size_t size, void* outp
     if (!g_initialized)
         return PF_STATUS_UNINITIALIZED;
 
-    if (!size) {
+    if (!read_size) {
         *bytes_read = 0;
         return PF_STATUS_SUCCESS;
     }
@@ -91,11 +91,32 @@ pf_status_t g_pf_read(pf_context_t* pf, uint64_t offset, size_t size, void* outp
         return PF_STATUS_SUCCESS;
     }
 
-    size_t bytes = ipf_read(pf, output, size);
+    size_t bytes = ipf_read(pf, output, read_size);
 	DEBUG_PF("DBG: output: %s\n", output);
     if (!bytes)
         return pf->last_error;
 
     *bytes_read = bytes;
     return PF_STATUS_SUCCESS;
+}
+
+pf_status_t g_pf_write(pf_context_t* pf, uint64_t offset, const void* input, size_t write_size) {
+    if (!g_initialized)
+        return PF_STATUS_UNINITIALIZED;
+
+    if (!ipf_seek(pf, offset))
+        return pf->last_error;
+
+    if (ipf_write(pf, input, write_size) != write_size)
+        return pf->last_error;
+    return PF_STATUS_SUCCESS;
+}
+
+pf_status_t g_pf_close(pf_context_t* pf) {
+    if (!g_initialized)
+        return PF_STATUS_UNINITIALIZED;
+
+    if (ipf_close(pf))
+        return PF_STATUS_SUCCESS;
+    return pf->last_error;
 }
