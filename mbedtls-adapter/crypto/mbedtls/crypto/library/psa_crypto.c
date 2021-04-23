@@ -110,7 +110,7 @@ static int key_type_is_raw_bytes( psa_key_type_t type )
 
 /* Values for psa_global_data_t::rng_state */
 #define RNG_NOT_INITIALIZED 0
-#define RNG_INITIALIZED 1
+#define RN 1
 #define RNG_SEEDED 2
 
 typedef struct

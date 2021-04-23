@@ -62,7 +62,7 @@ pf_status_t g_pf_open(pf_handle_t handle, const char* path, uint64_t underlying_
      
 	pf_context_t* ret = ipf_open(path, mode, create, handle, underlying_size, key, &status);
     DEBUG_PF("DBG: xxx of g_pf_open\n");
-	context = &ret;
+	*context = ret;
 	DEBUG_PF("DBG: end of g_pf_open\n");
 	
 	return status;
@@ -72,6 +72,7 @@ pf_status_t g_pf_read(pf_context_t* pf, uint64_t offset, size_t size, void* outp
                     size_t* bytes_read) {
 
 	DEBUG_PF("DBG: begin of g_pf_read\n");
+	DEBUG_PF("DBG: begin of g_pf_read, path: %s\n", pf->encrypted_part_plain.path);
 
     if (!g_initialized)
         return PF_STATUS_UNINITIALIZED;
@@ -91,6 +92,7 @@ pf_status_t g_pf_read(pf_context_t* pf, uint64_t offset, size_t size, void* outp
     }
 
     size_t bytes = ipf_read(pf, output, size);
+	DEBUG_PF("DBG: output: %s\n", output);
     if (!bytes)
         return pf->last_error;
 

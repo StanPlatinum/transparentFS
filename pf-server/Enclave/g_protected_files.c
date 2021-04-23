@@ -55,7 +55,8 @@ static pf_random_f          g_cb_random          = cb_random;
 #endif /* DEBUG */
 
 static pf_iv_t g_empty_iv = {0};
-static bool g_initialized = false;
+// HB: hardcoded to true
+static bool g_initialized = true;
 
 // The key derivation function follow recommendations from NIST Special Publication 800-108:
 // Recommendation for Key Derivation Using Pseudorandom Functions

@@ -254,14 +254,15 @@ int read_a_encrypted_file(char* input_path, pf_key_t* key, void* buf, size_t buf
 
     printf("return from g_pf_open\n");
 
-    // if (!(*context)) {
-    //     printf("pf_file_read(PF fd %d): PF not initialized\n", fd);
-    //     return -1;
-    // }
+    if (!(*context_pp)) {
+        printf("pf_file_read(PF fd %d): PF not initialized\n", fd);
+        return -1;
+    }
 
-    // size_t bytes_read = 0;
-    // g_pf_read(global_eid, rv, *context, 0, file_size, buf, &bytes_read);
-    // printf("buffer: %s\n");
+    size_t bytes_read = 0;
+    g_pf_read(global_eid, &rv, *context_pp, 0, file_size, buf, &bytes_read);
+    printf("bytes_read: %d\n", bytes_read);
+    printf("buffer: %s\n", buf);
 
 }
 
