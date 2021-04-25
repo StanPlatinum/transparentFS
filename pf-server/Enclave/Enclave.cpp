@@ -8,6 +8,8 @@
 #include "Enclave_t.h"
 
 
+const pf_key_t* preset_user_pf_key;
+
 /* re-define printf inside enclave */
 void printf(const char *fmt, ...){
 	char buf[BUFSIZ] = {'\0'};
