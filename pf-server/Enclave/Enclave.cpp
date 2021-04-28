@@ -20,7 +20,27 @@ void printf(const char *fmt, ...){
 	Ocall_PrintString(buf);
 }
 
-int pf_demo_processing(void){
+int g_pf_demo(void){
+    // a short demo to operate on graphene protected fs totally within an enclave
+
+    pf_key_t default_key = {0};
+    // const char* default_write_path = ;
+    // const char* default_read_path = ;
+
+    // // write something to a protected file
+    // ocall_open_helper();
+    // g_pf_open();
+    // g_pf_write();
+    // g_pf_close();
+    // printf();
+
+    // // read from a protected file
+    // ocall_open_helper();
+    // g_pf_open();
+    // g_pf_read();
+    // g_pf_close();
+    // print();
+
 	return 0;
 }
 
