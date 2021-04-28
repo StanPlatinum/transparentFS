@@ -1,6 +1,12 @@
 #include <unistd.h>
 #include <sys/types.h>
 #include <stdint.h>
+// #include "App.h"
+
+int ocall_open_helper(const char* path, bool create, pf_file_mode_t mode, size_t file_size){
+    return 0;
+}
+
 
 // ssize_t ocall_read(int fd, void* buf, size_t count) {
 //     return read(fd, buf, count);
