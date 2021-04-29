@@ -24,22 +24,42 @@ int g_pf_demo(void){
     // a short demo to operate on graphene protected fs totally within an enclave
 
     pf_key_t default_key = {0};
-    // const char* default_write_path = ;
-    // const char* default_read_path = ;
+    sgx_status_t rv;
+    pf_status_t grv;
+    int fd;
+    size_t file_size;
+    const char* default_path = "data/write_sec.txt";
+    char* content = "a secret string";
+    size_t content_len = strlen(content);
 
-    // // write something to a protected file
-    // ocall_open_helper();
-    // g_pf_open();
-    // g_pf_write();
-    // g_pf_close();
-    // printf();
+    
+    pf_context_t* context_p;
+    pf_context_t** context_pp = &context_p;
+    pf_handle_t g_file_handle = (pf_handle_t) &fd;
+    
+    // write content to a protected file
+    rv = ocall_open_helper(&fd, default_path, true, PF_FILE_MODE_WRITE, &file_size);
+    printf("fd: %d, size: %d \n", fd, file_size);
 
-    // // read from a protected file
-    // ocall_open_helper();
-    // g_pf_open();
-    // g_pf_read();
-    // g_pf_close();
-    // print();
+
+    // APIs starting with g_* are processed within the enclave
+    grv = g_pf_open(g_file_handle, default_path, file_size, PF_FILE_MODE_WRITE, true, &default_key, context_pp);
+    grv = g_pf_write(*context_pp, 0, content, content_len);
+    grv = g_pf_close(*context_pp);
+
+    rv = ocall_close_helper(fd);
+
+    rv = ocall_open_helper(&fd, default_path, false, PF_FILE_MODE_READ, &file_size);
+    printf("fd: %d, size: %d \n", fd, file_size);
+    
+
+    // create a buffer to read
+    char read_buffer[1000] = {0};
+    size_t bytes_read;
+    grv = g_pf_open(g_file_handle, default_path, file_size, PF_FILE_MODE_READ, false, &default_key, context_pp);
+    grv = g_pf_read(*context_pp, 0, read_buffer, content_len, &bytes_read);
+    printf("The content of the pf is: \n%s\n", read_buffer);
+    grv = g_pf_close(*context_pp);
 
 	return 0;
 }

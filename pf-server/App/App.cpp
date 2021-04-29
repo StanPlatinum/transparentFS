@@ -332,12 +332,16 @@ int SGX_CDECL main(int argc, char *argv[])
     // pf_key_t key = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15};
     pf_key_t key = {0};
     void* buffer = malloc(100);
+
+    // demos of operate on pf outside of the enclave:
+
     // read_a_encrypted_file("data/secret.txt", &key, buffer, 100);
 
-    // printf("read finished\n");
-    /* Destroy the enclave */
+    // encrypt_to_file("data/secret2.txt", &key, buffer, 13);
 
-    encrypt_to_file("data/secret2.txt", &key, buffer, 13);
+    // demo of operate on pf inside the enclave:
+    int rv;
+    g_pf_demo(global_eid, &rv);
 
     sgx_destroy_enclave(global_eid);
     printf("finished\n");
